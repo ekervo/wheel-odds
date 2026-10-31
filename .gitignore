@@ -1,0 +1,20 @@
+# Secrets: never commit these
+.env
+.env.*
+.circle/
+recovery_file*
+
+# Dependencies and build output
+node_modules/
+dist/
+contracts/out/
+contracts/cache/
+
+# Local logs written by the preview
+traces.jsonl
+console.jsonl
+*.log
+
+# Vendored tooling, not part of the product
+lib/
+.agents/

@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: 'DM Sans', sans-serif;
+  background-color: #0c0a08;
+  background-image:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 150, 40, 0.14), transparent 70%),
+    radial-gradient(rgba(255, 190, 110, 0.08) 1px, transparent 1px);
+  background-size: auto, 18px 18px;
+  background-attachment: fixed, scroll;
+  color: #fff3dc;
+  -webkit-font-smoothing: antialiased;
+}
+
+.display {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -0.03em;
+}
+
+.mono {
+  font-family: 'JetBrains Mono', Menlo, monospace;
+}
+
+.label {
+  font-family: 'JetBrains Mono', Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #b5a68f;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* LED wordmark: warm amber glow, like the Squeekchain dot-matrix logo. */
+.led {
+  background: linear-gradient(180deg, #ffe9a8 0%, #ffb43a 45%, #f07a1a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 8px rgba(255, 150, 40, 0.45));
+}
+.led-blue {
+  background: linear-gradient(180deg, #b4c0ff 0%, #6c88ff 50%, #3347c8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
