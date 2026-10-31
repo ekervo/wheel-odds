@@ -16,5 +16,5 @@ console.jsonl
 *.log
 
 # Vendored tooling, not part of the product
-lib/
-.agents/
+/lib/
+/.agents/
