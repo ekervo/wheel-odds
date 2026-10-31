@@ -1,5 +1,5 @@
-import { MARKET_ADDRESS, MARKET_DEPLOY_BLOCK } from '../src/lib/deployment'
-import { LIVE_CORE } from '../src/lib/coreAbi'
+import { MARKET_ADDRESS, MARKET_DEPLOY_BLOCK } from '../src/lib/deployment.js'
+import { LIVE_CORE } from '../src/lib/coreAbi.js'
 
 /** Facts about Wheel Odds that the chat assistant may use. Keep in step with the contract and the UI. */
 export const KNOWLEDGE = `

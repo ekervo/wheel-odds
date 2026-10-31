@@ -41,11 +41,13 @@ Environment variables:
 - `AI_SERVER_PORT`: port of the analyst backend, defaults to 3001. Optional.
 - `RPC_PROXY_BASE_URL`, `RPC_PROXY_TOKEN`, `RPC_PROXY_CHAINS`: provided by the hosting environment, used by the backend for Sepolia reads. Optional: without them the backend uses public Sepolia endpoints.
 
-The analyst runs as a small backend so the key never reaches the browser. Start it next to the app:
+The analyst runs as a small backend so the key never reaches the browser. Locally, start it next to the app:
 
 ```sh
 bun run server
 ```
+
+On Vercel the same code runs as serverless functions in `api/`. Add `DEEPSEEK_API_KEY` under Project Settings, Environment Variables, then redeploy. Without it the chat and analyst panels say they are switched off.
 
 Other commands:
 

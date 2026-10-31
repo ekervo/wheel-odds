@@ -1,5 +1,5 @@
 import type { Address, PublicClient } from 'viem'
-import { coreAbi } from './coreAbi'
+import { coreAbi } from './coreAbi.js'
 
 export type RoundWork = { round: bigint; work: bigint }
 

@@ -25,7 +25,7 @@ Over/under prediction market on the Squeekchain hamster wheel. Players bet Sepol
 - The line itself comes from `src/lib/forecast.ts` (deterministic, shared by client and server). The LLM only explains. The server builds all prompt facts itself and caches one answer per round.
 - The registry's public Sepolia RPC answers 429, so the app and server use publicnode and tenderly endpoints instead.
 
-- Site chat: `POST /api/ai/chat` in `server/index.ts`, facts in `server/knowledge.ts` (update it when rules or UI change). Shared budget of 30 calls a minute, 12 turns and 600 characters per message.
+- Logic lives in `server/core.ts`; `server/index.ts` is the local http server and `api/ai/chat.ts`, `api/ai/take.ts` are the Vercel functions (use `.js` import extensions so they resolve in ESM). Site chat: `POST /api/ai/chat`, facts in `server/knowledge.ts` (update it when rules or UI change). Shared budget of 30 calls a minute, 12 turns and 600 characters per message.
 - Leaderboard: `src/lib/leaderboard.ts` rebuilds results from BetPlaced and Settled events with the contract's pro rata rule; AI lines of settled rounds are recomputed with `forecast()`.
 - Invite links use the query `?r=<round>&l=<line>&s=over|under&a=1` (`src/lib/invite.ts`), built on `getShareBase()`.
 

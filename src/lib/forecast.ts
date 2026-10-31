@@ -1,4 +1,4 @@
-import type { RoundWork } from './rounds'
+import type { RoundWork } from './rounds.js'
 
 const LINE_STEP = 25
 
