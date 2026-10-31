@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Loader2, MessageCircle, Send, X } from 'lucide-react'
 import clsx from 'clsx'
+import { apiFetch } from '@/lib/api'
 
 type Msg = { role: 'user' | 'assistant'; content: string }
 
@@ -8,7 +9,7 @@ const SUGGESTIONS = ['How do I place a bet?', 'What is Beat the AI?', 'Why can I
 
 async function ask(messages: Msg[]): Promise<{ ok: true; reply: string } | { ok: false; text: string }> {
   try {
-    const res = await fetch('/api/ai/chat', {
+    const res = await apiFetch('/ai/chat', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ messages }),

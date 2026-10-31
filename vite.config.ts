@@ -4,6 +4,8 @@ import path from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 export default defineConfig({
+  // Relative asset paths, so the build also works from a gateway sub-path such as IPFS.
+  base: './',
   plugins: [react(), nodePolyfills()],
   resolve: {
     alias: {

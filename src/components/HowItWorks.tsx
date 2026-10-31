@@ -33,7 +33,7 @@ function SourceViewer() {
   const [failed, setFailed] = useState(false)
   const load = (open: boolean) => {
     if (!open || text !== null) return
-    fetch('/HamsterRoundMarket.sol')
+    fetch(`${import.meta.env.BASE_URL}HamsterRoundMarket.sol`)
       .then((r) => (r.ok ? r.text() : Promise.reject(new Error('not found'))))
       .then(setText)
       .catch(() => setFailed(true))

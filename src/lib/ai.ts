@@ -1,3 +1,5 @@
+import { apiFetch } from './api'
+
 export type AiTake =
   | {
       status: 'ok'
@@ -16,7 +18,7 @@ const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object
 /** Asks the backend analyst to explain the forecast for a round. Never throws. */
 export async function fetchAiTake(round: bigint): Promise<AiTake> {
   try {
-    const res = await fetch(`/api/ai/take?round=${round.toString()}`)
+    const res = await apiFetch(`/ai/take?round=${round.toString()}`)
     if (!res.ok) return { status: 'error', reason: 'backend_unreachable' }
     const body: unknown = await res.json()
     if (!isObj(body) || typeof body.status !== 'string') return { status: 'error', reason: 'bad_response' }
