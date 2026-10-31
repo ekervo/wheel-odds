@@ -32,7 +32,7 @@ function phaseOf(p: Position, clock: RoundClock | null, frontier: bigint | undef
   return { kind: 'waiting', text: 'Waiting for SqueekCore to certify' }
 }
 
-export function Positions({ clock, frontier }: { clock: RoundClock | null; frontier?: bigint }) {
+export function Positions({ clock, frontier, embedded = false }: { clock: RoundClock | null; frontier?: bigint; embedded?: boolean }) {
   const { address, isConnected } = useAccount()
   const { positions, isLoading } = usePositions(address)
   const tx = useMarketTx()
@@ -40,9 +40,13 @@ export function Positions({ clock, frontier }: { clock: RoundClock | null; front
   const paged = usePaged(positions)
 
   return (
-    <section className="rounded-2xl border border-line bg-panel p-5">
-      <div className="label">Your bets</div>
-      <h2 className="display mt-1 text-lg font-semibold">Positions and payouts</h2>
+    <section className={embedded ? '' : 'rounded-2xl border border-line bg-panel p-5'}>
+      {!embedded && (
+        <>
+          <div className="label">Your bets</div>
+          <h2 className="display mt-1 text-lg font-semibold">Positions and payouts</h2>
+        </>
+      )}
 
       {MARKET_ADDRESS === null ? (
         <Empty text="Available once the market contract is deployed." />
@@ -117,18 +121,20 @@ export function Positions({ clock, frontier }: { clock: RoundClock | null; front
   )
 }
 
-export function ClaimHistory() {
+export function ClaimHistory({ embedded = false }: { embedded?: boolean }) {
   const { address, isConnected } = useAccount()
   const { data, isLoading } = useClaimHistory(address)
   const total = (data ?? []).reduce((sum, r) => sum + r.payout, 0n)
   const paged = usePaged(data ?? [])
   return (
-    <section className="rounded-2xl border border-line bg-panel p-5">
+    <section className={embedded ? '' : 'rounded-2xl border border-line bg-panel p-5'}>
       <div className="flex items-end justify-between gap-3">
-        <div>
-          <div className="label">Your payouts</div>
-          <h2 className="display mt-1 text-lg font-semibold">Claim history</h2>
-        </div>
+        {!embedded && (
+          <div>
+            <div className="label">Your payouts</div>
+            <h2 className="display mt-1 text-lg font-semibold">Claim history</h2>
+          </div>
+        )}
         {data && data.length > 0 && (
           <div className="text-right">
             <div className="label">Total claimed</div>
@@ -167,16 +173,20 @@ export function ClaimHistory() {
   )
 }
 
-export function Results() {
+export function Results({ embedded = false }: { embedded?: boolean }) {
   const { data, isLoading } = useResults()
   const paged = usePaged(data ?? [])
   return (
-    <section className="rounded-2xl border border-line bg-panel p-5">
+    <section className={embedded ? '' : 'rounded-2xl border border-line bg-panel p-5'}>
       <div className="flex items-center justify-between">
-        <div>
+        {embedded ? (
           <div className="label">Settled onchain</div>
-          <h2 className="display mt-1 text-lg font-semibold">Recent results</h2>
-        </div>
+        ) : (
+          <div>
+            <div className="label">Settled onchain</div>
+            <h2 className="display mt-1 text-lg font-semibold">Recent results</h2>
+          </div>
+        )}
         {MARKET_ADDRESS !== null && (
           <a href={addressUrl(MARKET_ADDRESS)} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-mute hover:text-ink">
             Contract <ExternalLink size={12} />

@@ -1,11 +1,10 @@
 import { ConnectKitButton } from 'connectkit'
 import { AlertTriangle } from 'lucide-react'
+import { ActivityTabs } from '@/components/ActivityTabs'
 import { AiRecord } from '@/components/AiCard'
 import { ChatWidget } from '@/components/ChatWidget'
-import { Leaderboard } from '@/components/Leaderboard'
 import { HowItWorks } from '@/components/HowItWorks'
 import { MarketBoard } from '@/components/MarketBoard'
-import { ClaimHistory, Positions, Results } from '@/components/Positions'
 import { RoundHistory } from '@/components/RoundHistory'
 import { WheelHero } from '@/components/WheelHero'
 import { useCoreState, useIntegrity, useRecentRounds, useRoundClock, useWheelStatus } from '@/hooks/useSqueek'
@@ -59,18 +58,15 @@ export default function App() {
 
       <main className="mt-5 space-y-5">
         <WheelHero status={status} clock={clock} frontier={frontier} />
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
-          <div className="space-y-5">
-            <MarketBoard clock={clock} history={rounds} />
-            <AiRecord history={rounds} clock={clock} />
-            <RoundHistory rounds={rounds} loading={roundsLoading} />
+        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)]">
+          <MarketBoard clock={clock} history={rounds} />
+          <div className="lg:sticky lg:top-4">
+            <ActivityTabs clock={clock} frontier={frontier} maxWork={clock ? Number(clock.maxWork) : 10000} />
           </div>
-          <div className="space-y-5">
-            <Positions clock={clock} frontier={frontier} />
-            <ClaimHistory />
-            <Results />
-            <Leaderboard maxWork={clock ? Number(clock.maxWork) : 10000} />
-          </div>
+        </div>
+        <div className="grid items-start gap-5 md:grid-cols-2">
+          <RoundHistory rounds={rounds} loading={roundsLoading} />
+          <AiRecord history={rounds} clock={clock} />
         </div>
         <HowItWorks />
       </main>

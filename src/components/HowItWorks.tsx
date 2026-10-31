@@ -60,7 +60,7 @@ function SourceViewer() {
 
 export function HowItWorks() {
   return (
-    <section className="rounded-2xl border border-line bg-panel p-5 sm:p-6" aria-labelledby="how-title">
+    <section className="rounded-2xl border border-line bg-panel p-5" aria-labelledby="how-title">
       <div className="label flex items-center gap-1.5">
         <ShieldCheck size={13} aria-hidden /> How it works
       </div>
@@ -70,7 +70,7 @@ export function HowItWorks() {
 
       <ol className="mt-4 grid gap-3 sm:grid-cols-3">
         {STEPS.map((s) => (
-          <li key={s.n} className="rounded-xl border border-line bg-panel2 p-4">
+          <li key={s.n} className="rounded-xl border border-line bg-panel2 p-3.5">
             <div className="mono text-xs text-cyan">{s.n}</div>
             <div className="display mt-1.5 text-base font-semibold">{s.title}</div>
             <p className="mt-1 text-sm text-mute text-pretty">{s.text}</p>
@@ -79,13 +79,13 @@ export function HowItWorks() {
       </ol>
 
       <div className="label mt-6">Why it is fair</div>
-      <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+      <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {TRUST.map(({ icon: Icon, title, text }) => (
-          <li key={title} className="flex gap-3 rounded-xl border border-line p-3">
-            <Icon size={18} className="mt-0.5 shrink-0 text-gold" aria-hidden />
+          <li key={title} className="flex flex-col gap-1.5 rounded-xl border border-line p-3">
+            <Icon size={18} className="shrink-0 text-gold" aria-hidden />
             <div>
               <div className="text-sm font-semibold">{title}</div>
-              <p className="mt-0.5 text-sm text-mute text-pretty">{text}</p>
+              <p className="mt-0.5 text-xs text-mute text-pretty">{text}</p>
             </div>
           </li>
         ))}

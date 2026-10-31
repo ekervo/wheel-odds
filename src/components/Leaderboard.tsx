@@ -9,7 +9,7 @@ import { fmtEth, short } from '@/lib/format'
 type Tab = 'earners' | 'slayers'
 const SHOWN = 10
 
-export function Leaderboard({ maxWork }: { maxWork: number }) {
+export function Leaderboard({ maxWork, embedded = false }: { maxWork: number; embedded?: boolean }) {
   const [tab, setTab] = useState<Tab>('earners')
   const { address } = useAccount()
   const { data, isLoading, isError } = useLeaderboard(maxWork)
@@ -23,17 +23,19 @@ export function Leaderboard({ maxWork }: { maxWork: number }) {
   const me = address ? ranked.findIndex((r) => r.user.toLowerCase() === address.toLowerCase()) : -1
 
   return (
-    <section className="rounded-2xl border border-line bg-panel p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="label flex items-center gap-1.5">
-            <Trophy size={13} aria-hidden /> Leaderboard
+    <section className={embedded ? '' : 'rounded-2xl border border-line bg-panel p-5'}>
+      {!embedded && (
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <div className="label flex items-center gap-1.5">
+              <Trophy size={13} aria-hidden /> Leaderboard
+            </div>
+            <h2 className="display mt-1 text-lg font-semibold">Who is beating the wheel</h2>
           </div>
-          <h2 className="display mt-1 text-lg font-semibold">Who is beating the wheel</h2>
         </div>
-      </div>
+      )}
 
-      <div className="mt-3 grid grid-cols-2 gap-1.5" role="tablist" aria-label="Leaderboard">
+      <div className={embedded ? 'grid grid-cols-2 gap-1.5' : 'mt-3 grid grid-cols-2 gap-1.5'} role="tablist" aria-label="Leaderboard">
         {(
           [
             ['earners', 'Top earners'],
