@@ -13,9 +13,10 @@ import { readInvite } from '@/lib/invite'
 const ROUND_TABS = 4
 
 export function MarketBoard({ clock, history }: { clock: RoundClock | null; history?: RoundWork[] }) {
-  type Pick = { line: number; over: boolean; ai?: boolean }
+  type Pick = { round: bigint; line: number; over: boolean; ai?: boolean }
   const invite = useMemo(() => readInvite(window.location.search), [])
-  const [offsetState, setOffset] = useState<number | null>(null)
+  // The player's choice is an absolute round, never a tab position, so it cannot drift when a new round begins.
+  const [selectedRound, setSelectedRound] = useState<bigint | null>(null)
   const [custom, setCustom] = useState<number[]>([])
   const [customInput, setCustomInput] = useState('')
   const [pickState, setPick] = useState<Pick | null | undefined>(undefined)
@@ -23,10 +24,15 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
   // An invite link opens its round and bet until the player clicks something else.
   const inviteOffset = invite && clock ? Number(invite.round - clock.current) : null
   const inviteOpen = inviteOffset !== null && inviteOffset >= 1 && inviteOffset <= ROUND_TABS
-  const offset = offsetState ?? (inviteOpen ? inviteOffset : 1)
   const inviteStale = invite !== null && clock !== null && !inviteOpen
 
-  const round = clock ? clock.current + BigInt(offset) : undefined
+  const wanted = selectedRound ?? (inviteOpen && invite ? invite.round : null)
+  const stillOpen = clock !== null && wanted !== null && wanted > clock.current && wanted <= clock.current + BigInt(ROUND_TABS)
+  const round = clock ? (stillOpen && wanted !== null ? wanted : clock.current + 1n) : undefined
+  const offset = clock && round !== undefined ? Number(round - clock.current) : 1
+  // The round the player was on has started: move them on and say so, instead of silently shifting the tab.
+  const rolledOver = clock !== null && selectedRound !== null && selectedRound <= clock.current
+
   const fc = useMemo(
     () => (round !== undefined && history && clock ? forecast(history, round, Number(clock.maxWork)) : null),
     [round, history, clock],
@@ -37,7 +43,7 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
     [round, history, clock],
   )
   const tags = useMemo(() => new Map((rungs ?? []).map((r) => [r.line, r.tag])), [rungs])
-  const invitedLine = inviteOpen && offset === inviteOffset && invite?.line != null ? invite.line : null
+  const invitedLine = inviteOpen && invite !== null && round === invite.round && invite.line != null ? invite.line : null
   const lines = useMemo(() => {
     const base: number[] = [...(rungs ? rungs.map((r) => r.line) : [0]), ...custom].filter((l, i, a) => a.indexOf(l) === i)
     if (aiLine !== null && !base.includes(aiLine)) base.push(aiLine)
@@ -45,8 +51,14 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
     return base
   }, [rungs, custom, aiLine, invitedLine])
   const invitedPick: Pick | null =
-    invitedLine !== null && invite?.over != null ? { line: invitedLine, over: invite.over, ai: invite.ai && aiLine === invitedLine } : null
-  const pick = pickState === undefined ? invitedPick : pickState
+    invitedLine !== null && round !== undefined && invite?.over != null ? { round, line: invitedLine, over: invite.over, ai: invite.ai && aiLine === invitedLine } : null
+  const rawPick = pickState === undefined ? invitedPick : pickState
+  const pick = rawPick !== null && round !== undefined && rawPick.round === round ? rawPick : null
+  const choose = (line: number, over: boolean, ai: boolean) => {
+    if (round === undefined) return
+    setSelectedRound(round)
+    setPick({ round, line, over, ai })
+  }
   const { markets } = useMarketBoard(round, lines)
 
   const startsIn = clock && round ? clock.startOf(round) - clock.nowS : 0
@@ -68,6 +80,11 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
           This invite was for round {invite.round.toString()}, which is not open for betting right now (it has either started or is more than four rounds away). Pick one of the open rounds below.
         </p>
       )}
+      {rolledOver && selectedRound !== null && round !== undefined && (
+        <p role="status" className="mb-4 rounded-lg border border-gold/40 bg-gold/10 px-3 py-2 text-sm text-gold text-pretty">
+          Round {selectedRound.toString()} has started, so betting on it is closed. Now showing round {round.toString()}. Any open bet panel was closed, so nothing is placed by accident.
+        </p>
+      )}
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <div className="label">Open markets</div>
@@ -80,7 +97,7 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
               role="tab"
               aria-selected={offset === o}
               onClick={() => {
-                setOffset(o)
+                if (clock) setSelectedRound(clock.current + BigInt(o))
                 setPick(null)
               }}
               className={clsx('h-10 rounded-lg border px-3 text-sm num', offset === o ? 'border-gold bg-gold/10 text-gold' : 'border-line text-mute hover:text-ink')}
@@ -109,18 +126,19 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
                 market={aiLine !== null ? markets.get(aiLine) : undefined}
                 closed={closed}
                 selectedOver={pick?.ai ? pick.over : null}
-                onPick={(over) => aiLine !== null && setPick({ line: aiLine, over, ai: true })}
+                onPick={(over) => aiLine !== null && choose(aiLine, over, true)}
               />
               {pick?.ai && aiLine !== null && (
                 <div className="mt-3">
                   <BetPanel
+                    key={`${round}:${aiLine}:ai`}
                     round={round}
                     line={aiLine}
                     over={pick.over}
                     market={markets.get(aiLine)}
                     closed={closed}
                     ai
-                    onSide={(o) => setPick({ line: aiLine, over: o, ai: true })}
+                    onSide={(o) => choose(aiLine, o, true)}
                     onClose={() => setPick(null)}
                   />
                 </div>
@@ -162,14 +180,14 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
                     <div className="flex shrink-0 gap-1.5">
                       <button
                         disabled={closed}
-                        onClick={() => setPick({ line, over: true, ai: false })}
+                        onClick={() => choose(line, true, false)}
                         className={clsx('h-11 min-w-[64px] rounded-lg border text-sm font-semibold disabled:opacity-40', selected && pick?.over ? 'border-up bg-up/15 text-up' : 'border-line text-up hover:bg-up/10')}
                       >
                         Over
                       </button>
                       <button
                         disabled={closed}
-                        onClick={() => setPick({ line, over: false, ai: false })}
+                        onClick={() => choose(line, false, false)}
                         className={clsx('h-11 min-w-[64px] rounded-lg border text-sm font-semibold disabled:opacity-40', selected && !pick?.over ? 'border-down bg-down/15 text-down' : 'border-line text-down hover:bg-down/10')}
                       >
                         Under
@@ -179,12 +197,13 @@ export function MarketBoard({ clock, history }: { clock: RoundClock | null; hist
                   {selected && round !== undefined && pick && (
                     <div className="mt-3">
                       <BetPanel
+                        key={`${round}:${line}`}
                         round={round}
                         line={line}
                         over={pick.over}
                         market={m}
                         closed={closed}
-                        onSide={(o) => setPick({ line, over: o, ai: false })}
+                        onSide={(o) => choose(line, o, false)}
                         onClose={() => setPick(null)}
                       />
                     </div>
