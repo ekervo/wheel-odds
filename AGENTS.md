@@ -31,11 +31,12 @@ Over/under prediction market on the Squeekchain hamster wheel. Players bet Sepol
 
 ## Decisions and gotchas
 
-- The published deployment record (docs.squeekchain.com/assets/deployments/sepolia.json) lists SqueekCore `0x74665d...`, but it stopped receiving settlements around round 1973. The live API (`/v1/core`) reports core `0x980b4424c007caf7a1f3670b48c8eaef7ebc3d44` (genesis 1793022600), which has the same storage layout digest and Reporter. The market is constructed against the live core and the UI warns if the API ever reports a different one.
+- Squeekchain replaces its SqueekCore from time to time (20261025, then 20261103). A market is bound to one core for life, so a replacement means: update `LIVE_CORE` in `src/lib/coreAbi.ts`, deploy a new `HamsterRoundMarket` with the new core, update `src/lib/deployment.ts`. The UI warns while the market and the API disagree. The published record and the API agreed on `0xfd6c...` at the last check.
 - `roundPage(r-1, r, 1)` returns `certifiedThroughRound == r` only once round r is certified; the contract requires equality (verified against the live core).
 - Betting closes when a round starts (block timestamp). The UI stops 25 seconds earlier.
 
 ## Deployed contracts
 
-- HamsterRoundMarket: `0xd780ecea3f58da7a3f8129ac1e8d06332107e7c9` on Ethereum Sepolia, deployed at block 12033253, bound to SqueekCore `0x980b4424c007caf7a1f3670b48c8eaef7ebc3d44`.
+- HamsterRoundMarket: `0x806036c434e9e7c4beea602dfa2ae7cac602fecb` on Ethereum Sepolia, deployed at block 12090651, bound to SqueekCore `0xfd6c166d4b8e2962e65746a13e5a0797cd4de0c4` (release core-sepolia-20261103).
+- Previous markets (unsettled stakes there are refundable straight from the contract, no UI): `0xd780ecea3f58da7a3f8129ac1e8d06332107e7c9` (core `0x980b4424...`), earlier core in the 20261025 installation.
 - `public/HamsterRoundMarket.sol` is a copy of the contract shown in the app's source viewer. Re-copy it if the contract changes.

@@ -1,13 +1,20 @@
 {
-  "contractAddress": "0xd780ecea3f58da7a3f8129ac1e8d06332107e7c9",
+  "contractAddress": "0x806036c434e9e7c4beea602dfa2ae7cac602fecb",
   "network": "ETH-SEPOLIA",
   "deployerWalletId": "3c7d413d-6543-5aa6-83fd-4f55f2bd5218",
   "contract_code_path": "/home/user/app/contracts/HamsterRoundMarket.sol",
   "contract_compiled_code_path": "/home/user/app/contracts/out/HamsterRoundMarket.sol/HamsterRoundMarket.json",
   "contract_network_and_links": {
-    "Ethereum Sepolia": "https://sepolia.etherscan.io/address/0xd780ecea3f58da7a3f8129ac1e8d06332107e7c9"
+    "Ethereum Sepolia": "https://sepolia.etherscan.io/address/0x806036c434e9e7c4beea602dfa2ae7cac602fecb"
   },
   "contract_deployments": [
+    {
+      "chain": "Ethereum Sepolia",
+      "address": "0x806036c434e9e7c4beea602dfa2ae7cac602fecb",
+      "explorerUrl": "https://sepolia.etherscan.io/address/0x806036c434e9e7c4beea602dfa2ae7cac602fecb",
+      "txHash": "0x01405d254df8b7e1ea5c1a598d712e50be0f19462cfaa4768a91c589ac99cd49",
+      "deployedAt": "2026-11-08T12:44:02.831Z"
+    },
     {
       "chain": "Ethereum Sepolia",
       "address": "0xd780ecea3f58da7a3f8129ac1e8d06332107e7c9",

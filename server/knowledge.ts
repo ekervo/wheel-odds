@@ -40,7 +40,7 @@ No admin, no pause, no upgrade path, no fee. The only input is the work SqueekCo
 
 ADDRESSES
 - Market contract on Sepolia: ${MARKET_ADDRESS ?? 'not deployed'} (deployed at block ${MARKET_DEPLOY_BLOCK}).
-- SqueekCore it reads: ${LIVE_CORE}. This is the core the live Squeekchain API reports. The core in the published deployment record stopped receiving settlements around round 1973, so the market uses the live one. The app warns if the API reports a different core.
+- SqueekCore it reads: ${LIVE_CORE}. This is the core in Squeekchain's published deployment record and the one the live API reports. A market is bound to one core for life, so when Squeekchain replaces its core a new market contract is deployed and the app warns while the two disagree.
 
 LIMITS AND HONESTY
 - The wheel is a real hamster. It often rests, so many rounds have zero work. The chart shows idle streaks.

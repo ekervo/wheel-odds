@@ -1,12 +1,13 @@
 import { parseAbi, type Address } from 'viem'
 
 /**
- * The SqueekCore proxy that the live hamster settles into right now.
- * Source: https://api.squeekchain.com/v1/core (identities.core). The core in the
- * published deployment record (0x74665d...) stopped receiving settlements, so the
- * app checks at runtime that the market is bound to the core the live API reports.
+ * The SqueekCore proxy the live hamster settles into right now.
+ * Source: the published deployment record (release core-sepolia-20261103), which matches
+ * https://api.squeekchain.com/v1/core (identities.core) and the core's own on-chain
+ * configuration. Squeekchain has replaced its core before, and a market is bound to one core for
+ * life, so the app checks at runtime that the market reads the core the API reports.
  */
-export const LIVE_CORE: Address = '0x980b4424c007caf7a1f3670b48c8eaef7ebc3d44'
+export const LIVE_CORE: Address = '0xfd6c166d4b8e2962e65746a13e5a0797cd4de0c4'
 
 export const coreAbi = parseAbi([
   'struct CoreState { uint64 settledThroughRound; uint64 cumulativeWork; uint96 cumulativeBlockUnits; uint64 blockHeight; uint96 blockProgress; uint32 workPerThousandBlocks; uint256 authorizationNonce; bool paused; }',
